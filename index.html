@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arte em Resina</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background-color: #fff8f9; color: #333; line-height: 1.6; }
+    header { background-color: #ffdbe0; padding: 20px; text-align: center; }
+    header h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: #d16a89; }
+    .about, .catalog, footer { max-width: 900px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .about h2, .catalog h2 { font-size: 2rem; color: #d16a89; margin-bottom: 15px; text-align: center; }
+    .about p { font-size: 1.1rem; margin-bottom: 15px; }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .product { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center; }
+    .product img { width: 100%; height: auto; border-radius: 8px; }
+    .product h3 { font-size: 1.2rem; margin: 10px 0; color: #d16a89; }
+    .product p { font-size: .95rem; margin-bottom: 8px; }
+    .product .price { font-weight: bold; margin-bottom: 10px; }
+    .product button { background-color: #d16a89; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; }
+    .cart { max-width: 500px; margin: 20px auto; }
+    .cart table { width: 100%; border-collapse: collapse; }
+    .cart th, .cart td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+    .cart-total { text-align: right; margin-top: 10px; font-size: 1.2rem; font-weight: bold; }
+    .pix-section { text-align: center; margin: 30px auto; }
+    .pix-section h3 { color: #d16a89; font-size: 1.4rem; }
+    .pix-section p { font-size: 1.1rem; margin: 10px 0; }
+    .pix-section .pix-key { font-weight: bold; font-size: 1.3rem; color: #333; }
+    .pix-button { display: inline-block; margin: 15px 0; padding: 12px 25px; background-color: #d16a89; color: white; font-weight: bold; border-radius: 8px; text-decoration: none; }
+    footer { text-align: center; }
+    footer a { color: #d16a89; text-decoration: none; margin: 0 10px; font-weight: bold; }
+    @media (max-width:600px) { .products { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header><h1>Arte em Resina</h1></header>
+
+  <section class="about">
+    <h2>Sobre a Estela</h2>
+    <p>Olá! Sou a Estela, artista por paixão e especialista em personalizados com resina...</p>
+    <p>Trabalho com atenção aos detalhes, acabamento impecável e materiais de alta qualidade...</p>
+  </section>
+
+  <section class="catalog">
+    <h2>Produtos</h2>
+    <div class="products" id="product-list"></div>
+  </section>
+
+  <section class="cart" id="cart-section" style="display:none;">
+    <h2>Seu Carrinho</h2>
+    <table>
+      <thead><tr><th>Produto</th><th>Qtd</th><th>Preço</th></tr></thead>
+      <tbody id="cart-items"></tbody>
+    </table>
+    <div class="cart-total">Total: R$ <span id="cart-total">0,00</span></div>
+
+    <div class="pix-section">
+      <h3>Forma de Pagamento: Pix</h3>
+      <p>Faça o pagamento via Pix usando a chave abaixo:</p>
+      <p class="pix-key">📱 75991231017</p>
+      <p>(Estela Barbosa de Moura)</p>
+      <p><strong>Após o pagamento, envie o comprovante para o WhatsApp:</strong></p>
+      <a href="https://wa.me/5575992707368?text=Olá,%20acabei%20de%20fazer%20o%20pagamento%20via%20Pix." class="pix-button">Enviar Comprovante via WhatsApp</a>
+    </div>
+
+    <div style="text-align:center; margin-top: 20px;">
+      <button onclick="finalizarCompra()" class="pix-button">Finalizar Compra</button>
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://www.instagram.com/estela.resina" target="_blank">@estela.resina</a> |
+    <a href="https://wa.me/5575992707368" target="_blank">Fale pelo WhatsApp</a>
+  </footer>
+
+  <script>
+    const products = [
+      { id:1, name:'Quadro Nascimento com LED', price:149.90, img:'imagens/quadro ft do bb, cordao umbilical com pisca pisca.jpeg' },
+      { id:2, name:'Chaveiros Amor Pais (par)', price:39.90, img:'imagens/chaveiro presente mammae e papai.jpeg' },
+      { id:3, name:'Quadro 1º Ano de Vida', price:139.90, img:'imagens/quadro 1 ano do bb.jpeg' },
+      { id:4, name:'Porta Retrato Coração', price:119.90, img:'imagens/quadro formato de coração com ft e informações nascimento.jpeg' },
+      { id:5, name:'Chaveiro com Foto', price:24.90, img:'imagens/chaveiro foto do bb.jpeg' },
+      { id:6, name:'Chaveiro Placa Carro', price:19.90, img:'imagens/chaveiro placa.jpeg' },
+    ];
+
+    const cart = {};
+
+    function formatPrice(num) {
+      return num.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+
+    function renderProducts() {
+      const list = document.getElementById('product-list');
+      products.forEach(p => {
+        const div = document.createElement('div');
+        div.classList.add('product');
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p class="price">R$ ${formatPrice(p.price)}</p>
+          <button onclick="addToCart(${p.id})">Adicionar ao Carrinho</button>`;
+        list.appendChild(div);
+      });
+    }
+
+    function addToCart(id) {
+      cart[id] = (cart[id] || 0) + 1;
+      renderCart();
+    }
+
+    function renderCart() {
+      const section = document.getElementById('cart-section');
+      const body = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      body.innerHTML = '';
+      let total = 0;
+
+      Object.keys(cart).forEach(id => {
+        const qty = cart[id];
+        const p = products.find(x => x.id === parseInt(id));
+        const subtotal = p.price * qty;
+        total += subtotal;
+        const line = document.createElement('tr');
+        line.innerHTML = `<td>${p.name}</td><td>${qty}</td><td>R$ ${formatPrice(subtotal)}</td>`;
+        body.appendChild(line);
+      });
+
+      totalEl.textContent = formatPrice(total);
+      section.style.display = total > 0 ? 'block' : 'none';
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function finalizarCompra() {
+      let mensagem = '*Olá Estela!*%0A%0A';
+      mensagem += 'Quero finalizar essa compra, me ajuda? 😍🛍️%0A%0A';
+      let total = 0;
+
+      Object.keys(cart).forEach(id => {
+        const qty = cart[id];
+        const p = products.find(x => x.id === parseInt(id));
+        const subtotal = p.price * qty;
+        total += subtotal;
+        mensagem += `🧸 *${p.name}*%0A📦 Quantidade: ${qty}%0A💰 Subtotal: R$ ${formatPrice(subtotal)}%0A%0A`;
+      });
+
+      mensagem += `🧾 *Total: R$ ${formatPrice(total)}*%0A%0A🔗 *Imagens dos produtos:*%0A`;
+
+      Object.keys(cart).forEach(id => {
+        const p = products.find(x => x.id === parseInt(id));
+        mensagem += `${window.location.origin}/${p.img}%0A`;
+      });
+
+      const url = `https://wa.me/5575992707368?text=${mensagem}`;
+      window.open(url, '_blank');
+    }
+
+    window.onload = () => renderProducts();
+  </script>
+
+</body>
+</html>
